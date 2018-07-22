@@ -1,0 +1,63 @@
+﻿{
+  "cards": [
+    {
+      "id": 32,
+      "cardType": 0,
+      "deckType": 0,
+      "name": "Swamp Ghoul",
+      "texName": "Monsters/SwampGhoul",
+      "lvl": 6,
+      "numberOfTreasure": 2
+    },
+    {
+      "id": 39,
+      "cardType": 0,
+      "deckType": 0,
+      "name": "Bloatfly",
+      "texName": "Monsters/Bloatfly",
+      "lvl":  1
+    },
+    {
+      "id": 45,
+      "cardType": 0,
+      "deckType": 0,
+      "name": "ViciousDog",
+      "texName": "Monsters/ViciousDog",
+      "lvl": 1
+    },
+    {
+      "id": 46,
+      "cardType": 0,
+      "deckType": 0,
+      "name": "Vault Security",
+      "texName": "Monsters/VaultSecurity",
+      "lvl": 2
+    },
+    {
+      "id": 49,
+      "cardType": 0,
+      "deckType": 0,
+      "name": "Scavenger",
+      "texName": "Monsters/Scavenger",
+      "lvl": 6,
+      "numberOfTreasure": 2
+    },
+    {
+      "id": 59,
+      "cardType": 0,
+      "deckType": 0,
+      "name": "Enclave Protectron",
+      "texName": "Monsters/EnclaveProtectron",
+      "lvl": 3
+    },
+    {
+      "id": 63,
+      "cardType": 0,
+      "deckType": 0,
+      "name": "Robobrain",
+      "texName": "Monsters/Robobrain",
+      "lvl": 4,
+      "numberOfTreasure": 2
+    }
+  ]
+}

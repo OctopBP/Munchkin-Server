@@ -34,3 +34,30 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+.DS_Store
+*.meta
+*.mat
+*.prefab
+*.png
+*.unity
+*.psd
+*.asset
+*.aspx
+*.map
+*.config
+*.xml
+*.dll
+*.nib
+*.assets
+*.browser
+*.ini
+*.resS
+*.plist
+*.tif
+*.app
+Assets/TextMesh Pro/*
+*.dylib
+Packages/manifest.json
+ProjectSettings/ProjectVersion.txt
+*.anim
+*.controller

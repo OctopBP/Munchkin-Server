@@ -1,0 +1,78 @@
+﻿{
+  "cards": [
+    {
+      "id": 170,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "10-mm Pistol",
+      "texName": "Things/10mmPistol",
+      "bonus": 2,
+      "thingType": 0
+    },
+    {
+      "id": 172,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Gauss Rifle",
+      "texName": "Things/GaussRifle",
+      "bonus": 4,
+      "thingType": 0
+    },
+    {
+      "id": 179,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Slasher Knife",
+      "texName": "Things/SlasherKnife",
+      "restriction": [ 0, 2, 3, 4 ],
+      "bonus": 1,
+      "thingType": 0
+    },
+    {
+      "id": 181,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Plasma Pistol",
+      "texName": "Things/PlasmaPistol",
+      "bonus": 3,
+      "thingType": 0
+    },
+    {
+      "id": 201,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Metal Boots",
+      "texName": "Things/MetalBoots",
+      "bonus": 3,
+      "thingType": 3
+    },
+    {
+      "id": 206,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "T-51b Power Armor",
+      "texName": "Things/T51bPowerArmor",
+      "bonus": 5,
+      "thingType": 2
+    },
+    {
+      "id": 208,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Lincolns Hat",
+      "texName": "Things/LincolnsHat",
+      "bonus": 1,
+      "thingType": 1
+    },
+    {
+      "id": 212,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Raider Wastehound Helmet",
+      "texName": "Things/RaiderWastehoundHelmet",
+      "restriction": [ 2 ],
+      "bonus": 3,
+      "thingType": 1
+    }
+  ]
+}

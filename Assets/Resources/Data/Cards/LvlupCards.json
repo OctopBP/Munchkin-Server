@@ -1,0 +1,32 @@
+﻿{
+  "cards": [
+    {
+      "id": 150,
+      "cardType": 2,
+      "deckType": 1,
+      "name": "Pre-War Money",
+      "texName": "Lvlups/PreWarMoney"
+    },
+    {
+      "id": 152,
+      "cardType": 2,
+      "deckType": 1,
+      "name": "Here And Now",
+      "texName": "Lvlups/HereAndNow"
+    },
+    {
+      "id": 153,
+      "cardType": 2,
+      "deckType": 1,
+      "name": "Intense Training",
+      "texName": "Lvlups/IntenseTraining"
+    },
+    {
+      "id": 159,
+      "cardType": 2,
+      "deckType": 1,
+      "name": "Read The Pre-War Book",
+      "texName": "Lvlups/ReadThePreWarBook"
+    }
+  ]
+}
