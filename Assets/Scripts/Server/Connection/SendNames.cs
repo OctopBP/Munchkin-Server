@@ -30,4 +30,6 @@
 
 	public const string removecard = "REMOVECARD";
 
+	public const string values = "VALUES";
+
 }

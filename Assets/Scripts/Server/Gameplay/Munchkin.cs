@@ -9,7 +9,7 @@ public class PlayerInfo {
 
 public class Munchkin : MonoBehaviour {
 
-	public List<Card> hand = new List<Card>();
+	public Hand hand = new Hand();
 
 	public ThingCardSlot weapon1Slot = new ThingCardSlot();
 	public ThingCardSlot weapon2Slot = new ThingCardSlot();
@@ -35,11 +35,7 @@ public class Munchkin : MonoBehaviour {
 	}
 	public void LvlUp(int lvls = 1) {
 		lvl += lvls;
-	}
-
-	public void SetCloseId() {
-		for (int i = 0; i < hand.Count; i++)
-			hand[i].closeId = i;
+		lvl = Mathf.Max(1, lvl);
 	}
 
 	public CardSlot GetSlotByName(string slotName) {
@@ -55,6 +51,32 @@ public class Munchkin : MonoBehaviour {
 	}
 }
 
+public class Hand {
+	public List<Card> cards = new List<Card>();
+
+	public void Add(Card card) {
+		cards.Add(card);
+		SetCloseId();
+	}
+	public void Remove(Card card) {
+		if (card.deckType == HidenCard.DeckType.TREASURE)
+			GameManager.Instance.treasurePile.Add(card);
+		else
+			GameManager.Instance.doorPile.Add(card);
+		
+		cards.Remove(card);
+		SetCloseId();
+	}
+
+	public void SetCloseId() {
+		for (int i = 0; i < cards.Count; i++)
+			cards[i].closeId = i;
+	}
+
+	public Card GetCardAtId(int id) {
+		return cards.Find(card => card.id == id);
+	}
+}
 public class CardSlot {
 	protected Card SelfCard;
 
@@ -71,11 +93,10 @@ public class CardSlot {
 		SelfCard = card;
 	}
 	public void RemoveCard() {
-		// Add selfCard to pile
+		GameManager.Instance.treasurePile.Add(SelfCard);
 		SelfCard = null;
 	}
 }
-
 public class ThingCardSlot: CardSlot {
 	public ThingCard.ThingType slotType;
 
@@ -94,7 +115,6 @@ public class ThingCardSlot: CardSlot {
 		return SelfCard as ThingCard;
 	}
 }
-
 public class ClassCardSlot: CardSlot {
 	override public bool CanDropCard(Card card) {
 		return card.cardType == Card.CardType.CLASS;

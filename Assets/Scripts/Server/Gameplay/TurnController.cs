@@ -36,7 +36,7 @@ public class TurnController : MonoBehaviour {
 		currentTurnStage = TurnStage.preparation;
 		turnNumber = 0;
 
-		Server.Instance.SendChangeTurn(currentTurnStage, CurPlayerTurnNum);
+		Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum);
 
 		StartCoroutine(TurnFunc());
 	}
@@ -44,7 +44,7 @@ public class TurnController : MonoBehaviour {
 		StopAllCoroutines();
 
 		currentTurnStage = TurnStage.fight_player;
-		Server.Instance.SendChangeTurn(currentTurnStage, CurPlayerTurnNum);
+		Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum);
 
 		StartCoroutine(TurnFunc());
 	}
@@ -79,7 +79,7 @@ public class TurnController : MonoBehaviour {
 				currentTurnStage = TurnStage.preparation;
 				turnNumber++;
 				//currentTurnStage = TurnStage.completion;
-				Server.Instance.SendChangeTurn(currentTurnStage, CurPlayerTurnNum);
+				Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum);
 				break;
 
 			case TurnStage.fight_player:
@@ -93,7 +93,7 @@ public class TurnController : MonoBehaviour {
 			case TurnStage.completion:
 				currentTurnStage = TurnStage.preparation;
 				turnNumber++;
-				Server.Instance.SendChangeTurn(currentTurnStage, CurPlayerTurnNum);
+				Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum);
 				break;
 		}
 
@@ -110,15 +110,15 @@ public class TurnController : MonoBehaviour {
 			currentTurnStage = TurnStage.waiting;
 	}
 	private void AfterWait() {
-		// TODO: to ServerWT mb
+		// TODO: to WarTable mb
 		if (GameManager.Instance.warTable.GetCardInWT().cardType == Card.CardType.CLASS) {
 			GameManager.Instance.warTable.PlaseCardToHand(CurPlayerTurnNum);
-			Server.Instance.SendTakeCardFromWT();
+			Server.Instance.Send_TakeCardFromWT();
 		} else {
 			CardAbilitys.Instance.Invoke((GameManager.Instance.warTable.GetCardInWT() as TrapCard).ability, 0);
 			GameManager.Instance.warTable.ClearTable();
 
-			Server.Instance.SendChangeTurn(TurnStage.after_door, CurPlayerTurnNum);
+			Server.Instance.Send_ChangeTurn(TurnStage.after_door, CurPlayerTurnNum);
 		}
 
 		currentTurnStage = TurnStage.after_door;
@@ -132,9 +132,9 @@ public class TurnController : MonoBehaviour {
 			currentTurnStage = TurnStage.completion;
 
 			GameManager.Instance.warTable.ClearTable();
-			Server.Instance.SendEndFight(playerWin: false);
+			Server.Instance.Send_EndFight(playerWin: false);
 		}
-		Server.Instance.SendChangeTurn(currentTurnStage, CurPlayerTurnNum);
+		Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum);
 	}
 	private void CheckWinAfterEnemyTurn() {
 		if (GameManager.Instance.warTable.PlayerCanWin) {
@@ -142,13 +142,13 @@ public class TurnController : MonoBehaviour {
 			GameManager.Instance.OnPlayerWinFight();
 			currentTurnStage = TurnStage.completion;
 
-			Server.Instance.SendEndFight(playerWin: true);
+			Server.Instance.Send_EndFight(playerWin: true);
 		}
 		else {
 			currentTurnStage = TurnStage.fight_player;
 		}
 
-		Server.Instance.SendChangeTurn(currentTurnStage, CurPlayerTurnNum);
+		Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum);
 	}
 
 	/*

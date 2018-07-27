@@ -84,9 +84,64 @@ public class CardManager : MonoBehaviour {
 			CardManagerData.allTreasureCards.AddRange(JsonReader.ReadJson<LvlupCard>("LvlupCards"));
 			CardManagerData.allTreasureCards.AddRange(JsonReader.ReadJson<ThingCard>("ThingCards"));
 			CardManagerData.allTreasureCards.AddRange(JsonReader.ReadJson<ExplosiveCard>("ExplosiveCards"));
+
+			//MakeDoorDeck();
+			//MakeTreasureDeck();
 		}
 		catch(Exception e) {
 			Debug.LogError(e.Message);
 		}
+	}
+
+	public void MakeDoorDeck() {
+		List<Card> newDoorDeck = new List<Card>();
+
+		AddCardAtId(newDoorDeck, 32); // Monster
+		AddCardAtId(newDoorDeck, 39); // Monster
+		AddCardAtId(newDoorDeck, 21); // Trap
+		AddCardAtId(newDoorDeck, 45); // Monster
+		AddCardAtId(newDoorDeck, 7);  // Class
+		AddCardAtId(newDoorDeck, 46); // Monster
+		AddCardAtId(newDoorDeck, 49); // Monster
+		AddCardAtId(newDoorDeck, 24); // Trap
+		AddCardAtId(newDoorDeck, 59); // Monster
+		AddCardAtId(newDoorDeck, 26); // Trap
+		AddCardAtId(newDoorDeck, 28); // Trap
+		AddCardAtId(newDoorDeck, 63); // Monster
+		AddCardAtId(newDoorDeck, 8);  // Class
+		AddCardAtId(newDoorDeck, 9);  // Class
+		AddCardAtId(newDoorDeck, 10); // Class
+
+		CardManagerData.allDoorCards = newDoorDeck;
+	}
+	public void MakeTreasureDeck() {
+		List<Card> newTreasureDeck = new List<Card>();
+
+		AddCardAtId(newTreasureDeck, 170); // Thing
+		AddCardAtId(newTreasureDeck, 172); // Thing
+		AddCardAtId(newTreasureDeck, 150); // LvlUp
+		AddCardAtId(newTreasureDeck, 153); // LvlUp
+		AddCardAtId(newTreasureDeck, 159); // LvlUp
+		AddCardAtId(newTreasureDeck, 179); // Thing
+		AddCardAtId(newTreasureDeck, 165); // Expl
+		AddCardAtId(newTreasureDeck, 181); // Thing
+		AddCardAtId(newTreasureDeck, 163); // Expl
+		AddCardAtId(newTreasureDeck, 152); // LvlUp
+		AddCardAtId(newTreasureDeck, 201); // Thing
+		AddCardAtId(newTreasureDeck, 206); // Thing
+		AddCardAtId(newTreasureDeck, 164); // Expl
+		AddCardAtId(newTreasureDeck, 208); // Thing
+		AddCardAtId(newTreasureDeck, 212); // Thing
+		AddCardAtId(newTreasureDeck, 166); // Expl
+
+		CardManagerData.allTreasureCards = newTreasureDeck;
+	}
+
+	private void AddCardAtId(List<Card> deck, int id) {
+		Card card = CardManagerData.allDoorCards.Find(c => c.id == id);
+		if (card == null)
+			card = CardManagerData.allTreasureCards.Find(c => c.id == id);
+		
+		deck.Add(card);
 	}
 }

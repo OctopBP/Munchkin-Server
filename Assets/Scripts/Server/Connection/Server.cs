@@ -93,10 +93,7 @@ public class Server : MonoBehaviour {
 		}
 	}
 
-	private void OnConnection(int cnnId) {
-		string msg = SendNames.askname + "|" + cnnId;
-		Send(msg, reliableChannel, cnnId);
-	}
+	// Receive
 	private void OnDicconnection(int cnnId) {
 		if (GameManager.Instance.player1.info.connectionId == cnnId && GameManager.Instance.player1 != null)
 			GameManager.Instance.player1 = null;
@@ -122,14 +119,7 @@ public class Server : MonoBehaviour {
 		connectionNumber++;
 
 		if (connectionNumber == 2) {
-			Debug.Log("Start game");
-
-			string msg = SendNames.startgame;
-			msg += "|" + GameManager.Instance.player1.info.connectionId + "%" + GameManager.Instance.player1.info.name + "%" + GameManager.Instance.player1.info.number;
-			msg += "|" + GameManager.Instance.player2.info.connectionId + "%" + GameManager.Instance.player2.info.name + "%" + GameManager.Instance.player2.info.number;
-
-			Send(msg, reliableChannel);
-
+			Send_StartGameInfo();
 			GameManager.Instance.StarGame();
 		}
 	}
@@ -137,57 +127,90 @@ public class Server : MonoBehaviour {
 	private void TryDrop(int pNum, int cardId, string targetSlot) {
 		GameManager.Instance.TryDropCard(pNum, cardId, targetSlot);
 	}
-
-	public void SendTurnAllowed(int pNum, int cardId, int closeId, string targetSlot) {
-		string msg = SendNames.dropallowed + "|" + pNum + "|" + cardId + "|" + closeId + "|" + targetSlot;
-		Send(msg, reliableChannel);
-	}
-	public void SendTurnDisllowed(int pNum, int cardId, string reason) {
-		string msg = SendNames.dropdisallowed + "|" + cardId + "|" + reason;
-		Send(msg, reliableChannel, GameManager.Instance.GetPlayerAt(pNum).info.connectionId);
-	}
-
 	private void EndTurn(int pNum) {
 		GameManager.Instance.turnController.TryChangeTurn(pNum);
 	}
 
-	public void SendCardToHand(int pNum, Card card) {
-		Debug.Log("SendCardToHand pNum: " + pNum + " card.id: " + card.id);
-		SendCardToPlayerHand(GameManager.Instance.player1, pNum, card);
-		SendCardToPlayerHand(GameManager.Instance.player2, pNum, card);
+	// Send
+	private void OnConnection(int cnnId) {
+		string msg = SendNames.askname + "|" + cnnId;
+		Send(msg, reliableChannel, cnnId);
 	}
-	private void SendCardToPlayerHand(Player player, int pNum, Card card) {
+
+	public void Send_TurnAllowed(int pNum, int cardId, int closeId, string targetSlot) {
+		string msg = SendNames.dropallowed + "|" + pNum + "|" + cardId + "|" + closeId + "|" + targetSlot;
+		Send(msg, reliableChannel);
+
+		Send_NewValues();
+	}
+	public void Send_TurnDisllowed(int pNum, int cardId, string reason) {
+		string msg = SendNames.dropdisallowed + "|" + cardId + "|" + reason;
+		Send(msg, reliableChannel, GameManager.Instance.GetPlayerAt(pNum).info.connectionId);
+	}
+
+	public void Send_CardToHand(int pNum, Card card) {
+		Debug.Log("SendCardToHand pNum: " + pNum + " card.id: " + card.id);
+		Send_CardToPlayerHand(GameManager.Instance.player1, pNum, card);
+		Send_CardToPlayerHand(GameManager.Instance.player2, pNum, card);
+	}
+	private void Send_CardToPlayerHand(Player player, int pNum, Card card) {
 		int cardId = player.info.number == pNum ? card.id : 0;
 		string msg = SendNames.cardtohand + "|" + pNum + "|" + card.deckType + "|" + cardId;
 
 		Send(msg, reliableChannel, player.info.connectionId);
 	}
 
-	public void SendChangeTurn(TurnStage stage, int playerTurnNumber) {
+	public void Send_ChangeTurn(TurnStage stage, int playerTurnNumber) {
 		string msg = SendNames.newstage + "|" + playerTurnNumber + "|" + stage;
 		Send(msg, reliableChannel);
 	}
-	public void SendOpenDoor(int playerTurnNumber, int cardId, bool isMonster) {
+	public void Send_OpenDoor(int playerTurnNumber, int cardId, bool isMonster) {
 		string msg = SendNames.opendoor + "|" + playerTurnNumber + "|" + cardId + "|";
-		if (isMonster) 
+		if (isMonster)
 			msg += 1 + "|" + GameManager.Instance.warTable.playerDmg + "|" + GameManager.Instance.warTable.monsterDmg;
 		else
 			msg += 0;
-		
+
 		Send(msg, reliableChannel);
+
+		Send_NewValues();
 	}
 
-	public void SendEndFight(bool playerWin) {
+	public void Send_EndFight(bool playerWin) {
 		string msg = SendNames.endfigth + "|" + (playerWin ? 1 : 0);
 		Send(msg, reliableChannel);
+
+		Send_NewValues();
 	}
-	public void SendTakeCardFromWT() {
+	public void Send_TakeCardFromWT() {
 		string msg = SendNames.takecardfromwt + "|" + GameManager.Instance.turnController.CurPlayerTurnNum;
 		Send(msg, reliableChannel);
 	}
 
-	public void SendRemoveCard(int pNum, string cardSlot) {
+	public void Send_RemoveCard(int pNum, string cardSlot) {
 		string msg = SendNames.removecard + "|" + pNum + "|" + cardSlot;
+		Send(msg, reliableChannel);
+
+		Send_NewValues();
+	}
+
+	public void Send_StartGameInfo() {
+		string msg = SendNames.startgame;
+		msg += "|" + GameManager.Instance.player1.info.connectionId + "%" + GameManager.Instance.player1.info.name + "%" + GameManager.Instance.player1.info.number;
+		msg += "|" + GameManager.Instance.player2.info.connectionId + "%" + GameManager.Instance.player2.info.name + "%" + GameManager.Instance.player2.info.number;
+
+		Send(msg, reliableChannel);
+	}
+
+	public void Send_NewValues() {
+		string msg = SendNames.values;
+		msg += "|" + GameManager.Instance.player1.munchkin.Damage;
+		msg += "|" + GameManager.Instance.player1.munchkin.lvl;
+		msg += "|" + GameManager.Instance.player2.munchkin.Damage;
+		msg += "|" + GameManager.Instance.player2.munchkin.lvl;
+		msg += "|" + GameManager.Instance.warTable.monsterDmg;
+		msg += "|" + GameManager.Instance.warTable.playerDmg;
+
 		Send(msg, reliableChannel);
 	}
 

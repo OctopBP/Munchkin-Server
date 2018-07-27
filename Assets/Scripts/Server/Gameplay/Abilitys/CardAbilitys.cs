@@ -17,24 +17,20 @@ public class CardAbilitys: MonoBehaviour {
 
 	// id: 24
 	public void _TrapTornBackpack() {
-		List<ThingCard> allThings = new List<ThingCard>();
+		List<string> allThings = new List<string>();
 
-		allThings.AddIfNotNull(GameManager.Instance.GetCurPlayer().munchkin.weapon1Slot.GetCard());
-		allThings.AddIfNotNull(GameManager.Instance.GetCurPlayer().munchkin.weapon2Slot.GetCard());
-		allThings.AddIfNotNull(GameManager.Instance.GetCurPlayer().munchkin.headSlot.GetCard());
-		allThings.AddIfNotNull(GameManager.Instance.GetCurPlayer().munchkin.armorSlot.GetCard());
-		allThings.AddIfNotNull(GameManager.Instance.GetCurPlayer().munchkin.shoesSlot.GetCard());
-
-		Debug.Log("allThings.Count " + allThings.Count);
+		if (GameManager.Instance.GetCurPlayer().munchkin.weapon1Slot.GetCard() != null) allThings.Add("WEAPON1");
+		if (GameManager.Instance.GetCurPlayer().munchkin.weapon2Slot.GetCard() != null) allThings.Add("WEAPON2");
+		if (GameManager.Instance.GetCurPlayer().munchkin.headSlot.GetCard() != null) allThings.Add("HEAD");
+		if (GameManager.Instance.GetCurPlayer().munchkin.armorSlot.GetCard() != null) allThings.Add("ARMOR");
+		if (GameManager.Instance.GetCurPlayer().munchkin.shoesSlot.GetCard() != null) allThings.Add("SHOES");
 
 		for (int numbOfCard = Mathf.Min(allThings.Count, 2); numbOfCard > 0; numbOfCard--) {
 			int randomCard = Random.Range(0, numbOfCard);
 
-			string slotName = allThings[randomCard].thingType.ToString().ToUpper();
+			string slotName = allThings[randomCard].ToUpper();
 
-			Debug.Log("Remove " + slotName + " (" + randomCard + ") card");
-
-			Server.Instance.SendRemoveCard(GameManager.Instance.GetCurPlayer().info.number, slotName);
+			Server.Instance.Send_RemoveCard(GameManager.Instance.GetCurPlayer().info.number, slotName);
 			GameManager.Instance.GetCurPlayer().munchkin.GetSlotByName(slotName).RemoveCard();
 
 			allThings.RemoveAt(randomCard);
@@ -47,7 +43,7 @@ public class CardAbilitys: MonoBehaviour {
 		if (GameManager.Instance.GetCurPlayer().munchkin.shoesSlot.IsEmpty())
 			return;
 		
-		Server.Instance.SendRemoveCard(GameManager.Instance.GetCurPlayer().info.number, "SHOES");
+		Server.Instance.Send_RemoveCard(GameManager.Instance.GetCurPlayer().info.number, "SHOES");
 		GameManager.Instance.GetCurPlayer().munchkin.shoesSlot.RemoveCard();
 	}
 
@@ -58,7 +54,7 @@ public class CardAbilitys: MonoBehaviour {
 			// send that lvl change
 		}
 		else {
-			Server.Instance.SendRemoveCard(GameManager.Instance.GetCurPlayer().info.number, "CLASS");
+			Server.Instance.Send_RemoveCard(GameManager.Instance.GetCurPlayer().info.number, "CLASS");
 			GameManager.Instance.GetCurPlayer().munchkin.shoesSlot.RemoveCard();
 		}
 	}

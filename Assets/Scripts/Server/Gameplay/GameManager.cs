@@ -73,14 +73,13 @@ public class GameManager: MonoBehaviour {
 		deck.RemoveAt(0);
 		doorDeckCountText.text = doorDeck.Count + " Doors";
 		treasureDeckCountText.text = treasureDeck.Count + " Treasures";
-		card.closeId = sp.munchkin.hand.Count;
 		sp.munchkin.hand.Add(card);
 
-		Server.Instance.SendCardToHand(sp.info.number, card);
+		Server.Instance.Send_CardToHand(sp.info.number, card);
 	}
 
 	public void TryDropCard(int pNum, int cardId, string targetSlot) {
-		Card card = GetPlayerAt(pNum).munchkin.hand.Find(c => c.id == cardId);
+		Card card = GetPlayerAt(pNum).munchkin.hand.GetCardAtId(cardId);
 
 		if (card == null) {
 			TurnDisallowed(pNum, cardId, "no card in hand");
@@ -167,12 +166,11 @@ public class GameManager: MonoBehaviour {
 	}
 	private void TurnAllowed(int pNum, Card card, string targetSlot) {
 		GetPlayerAt(pNum).munchkin.hand.Remove(card);
-		GetPlayerAt(pNum).munchkin.SetCloseId();
 
-		Server.Instance.SendTurnAllowed(pNum, card.id, card.closeId, targetSlot);
+		Server.Instance.Send_TurnAllowed(pNum, card.id, card.closeId, targetSlot);
 	}
 	private void TurnDisallowed(int pNum, int cardId, string reason) {
-		Server.Instance.SendTurnDisllowed(pNum, cardId, reason);
+		Server.Instance.Send_TurnDisllowed(pNum, cardId, reason);
 	}
 
 	public void OpenDoor(out bool isMonster) {
@@ -184,7 +182,7 @@ public class GameManager: MonoBehaviour {
 		Card card = doorDeck[0];
 		doorDeck.RemoveAt(0);
 		doorDeckCountText.text = doorDeck.Count + " Doors";
-	
+
 		isMonster = card.cardType == Card.CardType.MONSTER;
 
 		if (isMonster)
@@ -192,7 +190,7 @@ public class GameManager: MonoBehaviour {
 		else
 			warTable.OpenCard(card);
 
-		Server.Instance.SendOpenDoor(turnController.CurPlayerTurnNum, card.id, isMonster);
+		Server.Instance.Send_OpenDoor(turnController.CurPlayerTurnNum, card.id, isMonster);
 	}
 
 	public void OnPlayerWinFight() {
