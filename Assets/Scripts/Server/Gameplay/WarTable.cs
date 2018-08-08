@@ -56,6 +56,20 @@ public class WarTable {
 		}
 	}
 
+	public void UseCardInWT(int CurPlayerTurnNum) {
+		if (playerCards[0].cardType == Card.CardType.CLASS) {
+			PlaseCardToHand(CurPlayerTurnNum);
+
+			Server.Instance.Send_TakeCardFromWT();
+		}
+		else {
+			CardAbilitys.Instance.Invoke((GameManager.Instance.warTable.GetCardInWT() as TrapCard).ability, 0);
+			Server.Instance.Send_NewValues();
+			Server.Instance.Send_ChangeTurn(TurnStage.after_door, CurPlayerTurnNum);
+
+			ClearTable();
+		}
+	}
 	public void PlaseCardToHand(int pNum) {
 		Munchkin munchkin = GameManager.Instance.GetPlayerAt(pNum).munchkin;
 		munchkin.hand.Add(playerCards[0]);

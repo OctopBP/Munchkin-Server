@@ -17,4 +17,12 @@ public static class MyExtensions {
         list[i] = list[j];
         list[j] = item;
     }
+
+	public static bool Contain<T>(this T[] array, T value) {
+		foreach (T temp in array) {
+			if (temp.Equals(value))
+				return true;
+		}
+		return false;
+	}
 }

@@ -7,15 +7,15 @@ public class PlayerInfo {
 	public int connectionId;
 }
 
-public class Munchkin : MonoBehaviour {
+public class Munchkin {
 
 	public Hand hand = new Hand();
 
-	public ThingCardSlot weapon1Slot = new ThingCardSlot();
-	public ThingCardSlot weapon2Slot = new ThingCardSlot();
-	public ThingCardSlot headSlot = new ThingCardSlot();
-	public ThingCardSlot armorSlot = new ThingCardSlot();
-	public ThingCardSlot shoesSlot = new ThingCardSlot();
+	public ThingCardSlot weapon1Slot = new ThingCardSlot(ThingCard.ThingType.WEAPON, "WEAPON1");
+	public ThingCardSlot weapon2Slot = new ThingCardSlot(ThingCard.ThingType.WEAPON, "WEAPON2");
+	public ThingCardSlot headSlot = new ThingCardSlot(ThingCard.ThingType.HEAD, "HEAD");
+	public ThingCardSlot armorSlot = new ThingCardSlot(ThingCard.ThingType.ARMOR, "ARMOR");
+	public ThingCardSlot shoesSlot = new ThingCardSlot(ThingCard.ThingType.SHOES, "SHOES");
 
 	public ClassCardSlot classSlot = new ClassCardSlot();
 
@@ -36,18 +36,37 @@ public class Munchkin : MonoBehaviour {
 	public void LvlUp(int lvls = 1) {
 		lvl += lvls;
 		lvl = Mathf.Max(1, lvl);
+
+		Server.Instance.Send_NewValues();
 	}
 
-	public CardSlot GetSlotByName(string slotName) {
+	public ThingCardSlot GetSlotByName(string slotName) {
 		switch (slotName) {
 			case "WEAPON1": return weapon1Slot;
 			case "WEAPON2":	return weapon2Slot;
 			case "HEAD":	return headSlot;
 			case "ARMOR":	return armorSlot;
 			case "SHOES":	return shoesSlot;
-			case "CLASS":	return classSlot;
 		}
 		return null;
+	}
+
+	//public void AddClass(ClassCard classCard) {
+	//	classSlot.AddCard(classCard);
+	//	OnRemoveClass();
+	//}
+	//public void RemoveClass() {
+	//	AddClass(null);
+	//	OnRemoveClass();
+	//}
+	public void OnRemoveClass() {
+		int classNumber = classSlot.GetCard() == null ? 4 : (int)classSlot.GetCard().className;
+
+		if (weapon1Slot.GetCard() != null)	weapon1Slot.OnClassChanges(classNumber);
+		if (weapon2Slot.GetCard() != null)	weapon2Slot.OnClassChanges(classNumber);
+		if (headSlot.GetCard() != null)		headSlot.OnClassChanges(classNumber);
+		if (armorSlot.GetCard() != null)	armorSlot.OnClassChanges(classNumber);
+		if (shoesSlot.GetCard() != null)	shoesSlot.OnClassChanges(classNumber);
 	}
 }
 
@@ -63,7 +82,7 @@ public class Hand {
 			GameManager.Instance.treasurePile.Add(card);
 		else
 			GameManager.Instance.doorPile.Add(card);
-		
+
 		cards.Remove(card);
 		SetCloseId();
 	}
@@ -77,57 +96,63 @@ public class Hand {
 		return cards.Find(card => card.id == id);
 	}
 }
+
 public class CardSlot {
 	protected Card SelfCard;
-
-	public virtual bool CanDropCard(Card card) {
-		return false;
-	}
+	public readonly string slotName;
 
 	public bool IsEmpty() {
 		return SelfCard == null;
 	}
 
-	public void AddCard(Card card) {
-		RemoveCard();
+	public virtual void AddCard(Card card) {
+		if (SelfCard != null)
+			GameManager.Instance.treasurePile.Add(SelfCard);
+		
 		SelfCard = card;
 	}
-	public void RemoveCard() {
-		GameManager.Instance.treasurePile.Add(SelfCard);
+	public virtual void RemoveCard() {
+		if (SelfCard != null) {
+			GameManager.Instance.treasurePile.Add(SelfCard);
+			Server.Instance.Send_RemoveCard(GameManager.Instance.GetCurPlayer().info.number, slotName);
+		}
+
 		SelfCard = null;
 	}
 }
+
 public class ThingCardSlot: CardSlot {
+	public ThingCardSlot(ThingCard.ThingType sType, string sName) {
+		slotType = sType;
+		slotName = sName;
+	}
+
 	public ThingCard.ThingType slotType;
-
-	override public bool CanDropCard(Card card) {
-		return (card.cardType == Card.CardType.THING && (card as ThingCard).thingType == slotType);
-	}
-	public bool AddCardIfCan(ThingCard card) {
-		if (CanDropCard(card))
-			return false;
-
-		AddCard(card);
-		return true;
-	}
-
 	public ThingCard GetCard() {
 		return SelfCard as ThingCard;
 	}
-}
-public class ClassCardSlot: CardSlot {
-	override public bool CanDropCard(Card card) {
-		return card.cardType == Card.CardType.CLASS;
-	}
-	public bool AddCardIfCan(ClassCard card) {
-		if (CanDropCard(card))
-			return false;
 
-		AddCard(card);
-		return true;
+	public void OnClassChanges(int newClassNumber) {
+		if (!(SelfCard as ThingCard).restriction.Contain(newClassNumber))
+			RemoveCard();
+	}
+}
+
+public class ClassCardSlot: CardSlot {
+	public ClassCardSlot() {
+		slotName = "CLASS";
 	}
 
 	public ClassCard GetCard() {
 		return SelfCard as ClassCard;
+	}
+
+	public override void AddCard(Card card) {
+		base.AddCard(card);
+		GameManager.Instance.GetCurPlayer().munchkin.OnRemoveClass();
+	}
+	public override void RemoveCard() {
+		base.RemoveCard();
+		GameManager.Instance.GetCurPlayer().munchkin.OnRemoveClass();
 	}
 }

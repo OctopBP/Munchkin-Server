@@ -56,10 +56,10 @@ public class GameManager: MonoBehaviour {
 	}
 
 	public void GiveStartCards() {
-		GiveHandCards(numberOfCards: 2, sp: player1, deck: doorDeck);
-		GiveHandCards(numberOfCards: 2, sp: player1, deck: treasureDeck);
-		GiveHandCards(numberOfCards: 2, sp: player2, deck: doorDeck);
-		GiveHandCards(numberOfCards: 2, sp: player2, deck: treasureDeck);
+		GiveHandCards(numberOfCards: 3, sp: player1, deck: doorDeck);
+		GiveHandCards(numberOfCards: 3, sp: player1, deck: treasureDeck);
+		GiveHandCards(numberOfCards: 3, sp: player2, deck: doorDeck);
+		GiveHandCards(numberOfCards: 3, sp: player2, deck: treasureDeck);
 	}
 	private void GiveHandCards(int numberOfCards, Player sp, List<Card> deck) {
 		for (int i = 0; i < numberOfCards; i++)
@@ -86,14 +86,6 @@ public class GameManager: MonoBehaviour {
 			return;
 		}
 
-		Dictionary<string, ThingCard.ThingType> thingMap = new Dictionary<string, ThingCard.ThingType> {
-			{ "WEAPON1",	ThingCard.ThingType.WEAPON	},
-			{ "WEAPON2",	ThingCard.ThingType.WEAPON	},
-			{ "HEAD",		ThingCard.ThingType.HEAD	},
-			{ "ARMOR",		ThingCard.ThingType.ARMOR	},
-			{ "SHOES",		ThingCard.ThingType.SHOES	}
-		};
-
 		switch (card.cardType) {
 			case Card.CardType.EXPLOSIVE:
 				if (targetSlot == "WT_MONSTER" || targetSlot == "WT_PLAYER") {
@@ -109,36 +101,24 @@ public class GameManager: MonoBehaviour {
 
 			case Card.CardType.LVLUP:
 				if (targetSlot == "WT_MONSTER" || targetSlot == "WT_PLAYER") {
-					warTable.PlayCard(card, true);
-					TurnAllowed(pNum, card, targetSlot);
-					return;
+					if (turnController.CurPlayerTurnNum == pNum) {
+						warTable.PlayCard(card, true);
+						TurnAllowed(pNum, card, targetSlot);
+						return;
+					}
 				}
 				break;
 
 			case Card.CardType.THING:
-				if (thingMap[targetSlot] == (card as ThingCard).thingType) {
-					if ((turnController.currentTurnStage == TurnStage.preparation ||
-					     turnController.currentTurnStage == TurnStage.completion ||
-					     turnController.currentTurnStage == TurnStage.after_door) &&
-					     turnController.CurPlayerTurnNum == pNum) {
+				if (GetPlayerAt(pNum).munchkin.GetSlotByName(targetSlot).slotType == (card as ThingCard).thingType) {
+					if (new TurnStage[] { TurnStage.preparation, TurnStage.completion, TurnStage.after_door }.Contain(turnController.currentTurnStage)
+						&& turnController.CurPlayerTurnNum == pNum) {
 
-						if (GetPlayerAt(pNum).munchkin.classSlot.IsEmpty()) {
-							foreach (int i in (card as ThingCard).restriction) {
-								if (i == 4) {
-									GetPlayerAt(pNum).munchkin.GetSlotByName(targetSlot).AddCard(card as ThingCard);
-									TurnAllowed(pNum, card, targetSlot);
-									return;
-								}
-							}
-						}
-						else {
-							foreach (int i in (card as ThingCard).restriction) {
-								if (i == (int)GetPlayerAt(pNum).munchkin.classSlot.GetCard().className) {
-									GetPlayerAt(pNum).munchkin.GetSlotByName(targetSlot).AddCard(card);
-									TurnAllowed(pNum, card, targetSlot);
-									return;
-								}
-							}
+						int classNameIndex = GetPlayerAt(pNum).munchkin.classSlot.IsEmpty() ? 4 : (int)GetPlayerAt(pNum).munchkin.classSlot.GetCard().className;
+						if ((card as ThingCard).restriction.Contain(classNameIndex)) {
+							GetPlayerAt(pNum).munchkin.GetSlotByName(targetSlot).AddCard(card as ThingCard);
+							TurnAllowed(pNum, card, targetSlot);
+							return;
 						}
 					}
 				}

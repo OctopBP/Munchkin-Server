@@ -110,16 +110,7 @@ public class TurnController : MonoBehaviour {
 			currentTurnStage = TurnStage.waiting;
 	}
 	private void AfterWait() {
-		// TODO: to WarTable mb
-		if (GameManager.Instance.warTable.GetCardInWT().cardType == Card.CardType.CLASS) {
-			GameManager.Instance.warTable.PlaseCardToHand(CurPlayerTurnNum);
-			Server.Instance.Send_TakeCardFromWT();
-		} else {
-			CardAbilitys.Instance.Invoke((GameManager.Instance.warTable.GetCardInWT() as TrapCard).ability, 0);
-			GameManager.Instance.warTable.ClearTable();
-
-			Server.Instance.Send_ChangeTurn(TurnStage.after_door, CurPlayerTurnNum);
-		}
+		GameManager.Instance.warTable.UseCardInWT(CurPlayerTurnNum);
 
 		currentTurnStage = TurnStage.after_door;
 	}
