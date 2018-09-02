@@ -30,15 +30,25 @@ using UnityEngine;
 }
 [Serializable] public class MonsterCard: Card {
 	public int lvl;
+	public int[] classBonus = { 0, 0, 0, 0, 0 };
+
+	public string onLose;
+	public OnLoseType onLoseType = OnLoseType.NOTHING;
+	public enum OnLoseType {
+		INSTANT,
+		CARD_SELECTION,
+		NOTHING
+	}
+
 	public int numberOfTreasure = 1;
 }
 [Serializable] public class ClassCard: Card {
 	public ClassName className;
 	public enum ClassName {
-		WANDERER,
-		PALADIN,
-		RAIDER,
-		SCIENTIST
+		WANDERER,	// 0
+		PALADIN,	// 1
+		RAIDER,		// 2
+		SCIENTIST	// 3
 	}
 }
 [Serializable] public class LvlupCard: Card {
@@ -85,7 +95,7 @@ public class CardManager : MonoBehaviour {
 			CardManagerData.allTreasureCards.AddRange(JsonReader.ReadJson<ThingCard>("ThingCards"));
 			CardManagerData.allTreasureCards.AddRange(JsonReader.ReadJson<ExplosiveCard>("ExplosiveCards"));
 
-			//MakeDoorDeck();
+			MakeDoorDeck();
 			//MakeTreasureDeck();
 		}
 		catch(Exception e) {
@@ -96,22 +106,14 @@ public class CardManager : MonoBehaviour {
 	public void MakeDoorDeck() {
 		List<Card> newDoorDeck = new List<Card>();
 
-		AddCardAtId(newDoorDeck, 32); // Monster
-		AddCardAtId(newDoorDeck, 39); // Monster
-		AddCardAtId(newDoorDeck, 21); // Trap
-		AddCardAtId(newDoorDeck, 45); // Monster
-		AddCardAtId(newDoorDeck, 7);  // Class
-		AddCardAtId(newDoorDeck, 46); // Monster
-		AddCardAtId(newDoorDeck, 49); // Monster
-		AddCardAtId(newDoorDeck, 24); // Trap
-		AddCardAtId(newDoorDeck, 59); // Monster
-		AddCardAtId(newDoorDeck, 26); // Trap
-		AddCardAtId(newDoorDeck, 28); // Trap
-		AddCardAtId(newDoorDeck, 63); // Monster
-		AddCardAtId(newDoorDeck, 8);  // Class
-		AddCardAtId(newDoorDeck, 9);  // Class
-		AddCardAtId(newDoorDeck, 10); // Class
+		AddCardAtId(newDoorDeck, 40); // Monster
+		AddCardAtId(newDoorDeck, 50); // Monster
+		AddCardAtId(newDoorDeck, 33); // Monster
 
+		CardManagerData.allDoorCards.Remove(CardManagerData.allDoorCards.Find((Card obj) => obj.id == 40));
+		CardManagerData.allDoorCards.Remove(CardManagerData.allDoorCards.Find((Card obj) => obj.id == 50));
+		CardManagerData.allDoorCards.Remove(CardManagerData.allDoorCards.Find((Card obj) => obj.id == 33));
+		newDoorDeck.AddRange(CardManagerData.allDoorCards);
 		CardManagerData.allDoorCards = newDoorDeck;
 	}
 	public void MakeTreasureDeck() {
@@ -119,19 +121,19 @@ public class CardManager : MonoBehaviour {
 
 		AddCardAtId(newTreasureDeck, 170); // Thing
 		AddCardAtId(newTreasureDeck, 172); // Thing
+		AddCardAtId(newTreasureDeck, 181); // Thing
+		AddCardAtId(newTreasureDeck, 179); // Thing
+		AddCardAtId(newTreasureDeck, 201); // Thing
+		AddCardAtId(newTreasureDeck, 206); // Thing
+		AddCardAtId(newTreasureDeck, 208); // Thing
+		AddCardAtId(newTreasureDeck, 212); // Thing
 		AddCardAtId(newTreasureDeck, 150); // LvlUp
 		AddCardAtId(newTreasureDeck, 153); // LvlUp
 		AddCardAtId(newTreasureDeck, 159); // LvlUp
-		AddCardAtId(newTreasureDeck, 179); // Thing
 		AddCardAtId(newTreasureDeck, 165); // Expl
-		AddCardAtId(newTreasureDeck, 181); // Thing
 		AddCardAtId(newTreasureDeck, 163); // Expl
 		AddCardAtId(newTreasureDeck, 152); // LvlUp
-		AddCardAtId(newTreasureDeck, 201); // Thing
-		AddCardAtId(newTreasureDeck, 206); // Thing
 		AddCardAtId(newTreasureDeck, 164); // Expl
-		AddCardAtId(newTreasureDeck, 208); // Thing
-		AddCardAtId(newTreasureDeck, 212); // Thing
 		AddCardAtId(newTreasureDeck, 166); // Expl
 
 		CardManagerData.allTreasureCards = newTreasureDeck;

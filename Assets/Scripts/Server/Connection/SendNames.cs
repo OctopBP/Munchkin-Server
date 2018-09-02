@@ -1,5 +1,7 @@
 ﻿public static class SendNames {
 
+	// TODO: Remame
+
 	public const string disconnection = "DC";
 
 	public const string askname = "ASKNAME";
@@ -31,5 +33,11 @@
 	public const string removecard = "REMOVECARD";
 
 	public const string values = "VALUES";
+
+	public const string cardselectionstage = "CARDSELSTAGE";
+
+	public const string en_cardselectionstage = "ENCARDSELSTAGE";
+
+	public const string cardtodrop = "CARDTODROP";
 
 }

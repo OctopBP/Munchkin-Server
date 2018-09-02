@@ -1,62 +1,76 @@
 ﻿{
   "cards": [
     {
-      "id": 32,
+      "id": 33,
       "cardType": 0,
       "deckType": 0,
       "name": "Swamp Ghoul",
       "texName": "Monsters/SwampGhoul",
       "lvl": 6,
+      "classBonus": [ 0, 2, 0, 0, 0 ],
+      "onLoseType": 1,
+      "onLose": "_DropThreeCards",
       "numberOfTreasure": 2
     },
     {
-      "id": 39,
+      "id": 40,
       "cardType": 0,
       "deckType": 0,
       "name": "Bloatfly",
       "texName": "Monsters/Bloatfly",
-      "lvl":  1
+      "lvl": 1,
+      "classBonus": [ 0, 0, 0, 0, 3 ],
+      "onLoseType": 0,
+      "onLose": "_LoseOneLvl"
     },
     {
-      "id": 45,
-      "cardType": 0,
-      "deckType": 0,
-      "name": "ViciousDog",
-      "texName": "Monsters/ViciousDog",
-      "lvl": 1
-    },
-    {
-      "id": 46,
-      "cardType": 0,
-      "deckType": 0,
-      "name": "Vault Security",
-      "texName": "Monsters/VaultSecurity",
-      "lvl": 2
-    },
-    {
-      "id": 49,
+      "id": 50,
       "cardType": 0,
       "deckType": 0,
       "name": "Scavenger",
       "texName": "Monsters/Scavenger",
       "lvl": 6,
+      "classBonus": [ 0, 0, -2, 0, 0 ],
       "numberOfTreasure": 2
     },
     {
-      "id": 59,
+      "id": 56,
+      "cardType": 0,
+      "deckType": 0,
+      "name": "Vicious Dog",
+      "texName": "Monsters/ViciousDog",
+      "lvl": 1,
+      "onLoseType": 0,
+      "onLose": "_LoseOneLvl"
+    },
+    {
+      "id": 57,
+      "cardType": 0,
+      "deckType": 0,
+      "name": "Vault Security",
+      "texName": "Monsters/VaultSecurity",
+      "lvl": 2,
+      "onLoseType": 0,
+      "onLose": "_LoseOneLvl"
+    },
+    {
+      "id": 60,
       "cardType": 0,
       "deckType": 0,
       "name": "Enclave Protectron",
       "texName": "Monsters/EnclaveProtectron",
-      "lvl": 3
+      "lvl": 3,
+      "onLoseType": 0,
+      "onLose": "_LoseArmor"
     },
     {
-      "id": 63,
+      "id": 64,
       "cardType": 0,
       "deckType": 0,
       "name": "Robobrain",
       "texName": "Monsters/Robobrain",
       "lvl": 4,
+      "classBonus": [ 0, 0, 0, 4, 0 ],
       "numberOfTreasure": 2
     }
   ]

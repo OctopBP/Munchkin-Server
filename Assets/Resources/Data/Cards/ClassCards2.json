@@ -1,22 +1,6 @@
 ﻿{
   "cards": [
     {
-      "id": 3,
-      "cardType": 1,
-      "deckType": 0,
-      "name": "Lone Wanderer",
-      "texName": "Classes/LoneWanderer_3",
-      "className": 0
-    },
-    {
-      "id": 4,
-      "cardType": 1,
-      "deckType": 0,
-      "name": "Lone Wanderer",
-      "texName": "Classes/LoneWanderer_4",
-      "className": 0
-    },
-    {
       "id": 7,
       "cardType": 1,
       "deckType": 0,
@@ -47,22 +31,6 @@
       "name": "Raider",
       "texName": "Classes/Raider_2",
       "className": 2
-    },
-    {
-      "id": 13,
-      "cardType": 1,
-      "deckType": 0,
-      "name": "Enclave Scientist",
-      "texName": "Classes/EnclaveScientist_1",
-      "className": 3
-    },
-    {
-      "id": 15,
-      "cardType": 1,
-      "deckType": 0,
-      "name": "Enclave Scientist",
-      "texName": "Classes/EnclaveScientist_3",
-      "className": 3
     }
   ]
 }

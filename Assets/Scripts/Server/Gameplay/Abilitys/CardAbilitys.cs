@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class CardAbilitys: MonoBehaviour {
+public class CardAbilitys : MonoBehaviour {
 
 	public static CardAbilitys Instance { get; set; }
 
@@ -18,27 +18,27 @@ public class CardAbilitys: MonoBehaviour {
 	public void _TrapTornBackpack() {
 		List<string> allThings = new List<string>();
 
-		if (GameManager.Instance.GetCurPlayer().munchkin.weapon1Slot.GetCard() != null)
-			allThings.Add(GameManager.Instance.GetCurPlayer().munchkin.weapon1Slot.slotName);
+		if (!GameManager.Instance.GetCurPlayer().munchkin.weapon1Slot.IsEmpty())
+			allThings.Add(GameManager.Instance.GetCurPlayer().munchkin.weapon1Slot.GetSlotId());
 		
-		if (GameManager.Instance.GetCurPlayer().munchkin.weapon2Slot.GetCard() != null)
-			allThings.Add(GameManager.Instance.GetCurPlayer().munchkin.weapon2Slot.slotName);
+		if (!GameManager.Instance.GetCurPlayer().munchkin.weapon2Slot.IsEmpty())
+			allThings.Add(GameManager.Instance.GetCurPlayer().munchkin.weapon2Slot.GetSlotId());
 		
-		if (GameManager.Instance.GetCurPlayer().munchkin.headSlot.GetCard() != null)
-			allThings.Add(GameManager.Instance.GetCurPlayer().munchkin.headSlot.slotName);
+		if (!GameManager.Instance.GetCurPlayer().munchkin.headSlot.IsEmpty())
+			allThings.Add(GameManager.Instance.GetCurPlayer().munchkin.headSlot.GetSlotId());
 		
-		if (GameManager.Instance.GetCurPlayer().munchkin.armorSlot.GetCard() != null)
-			allThings.Add(GameManager.Instance.GetCurPlayer().munchkin.armorSlot.slotName);
+		if (!GameManager.Instance.GetCurPlayer().munchkin.armorSlot.IsEmpty())
+			allThings.Add(GameManager.Instance.GetCurPlayer().munchkin.armorSlot.GetSlotId());
 		
-		if (GameManager.Instance.GetCurPlayer().munchkin.shoesSlot.GetCard() != null)
-			allThings.Add(GameManager.Instance.GetCurPlayer().munchkin.shoesSlot.slotName);
+		if (!GameManager.Instance.GetCurPlayer().munchkin.shoesSlot.IsEmpty())
+			allThings.Add(GameManager.Instance.GetCurPlayer().munchkin.shoesSlot.GetSlotId());
 
 		for (int numbOfCard = Mathf.Min(allThings.Count, 2); numbOfCard > 0; numbOfCard--) {
 			int randomCard = Random.Range(0, numbOfCard);
 
-			string slotName = allThings[randomCard].ToUpper();
+			string slotId = allThings[randomCard];
 
-			GameManager.Instance.GetCurPlayer().munchkin.GetSlotByName(slotName).RemoveCard();
+			GameManager.Instance.GetCurPlayer().munchkin.GetSlotById(slotId).RemoveCard();
 
 			allThings.RemoveAt(randomCard);
 		}

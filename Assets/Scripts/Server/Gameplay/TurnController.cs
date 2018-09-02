@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public enum TurnStage {
 	preparation,
@@ -8,21 +8,33 @@ public enum TurnStage {
 	after_door,
 	fight_player,
 	fight_enemy,
+	select_cards,
 	completion
 }
 
 public class TurnController : MonoBehaviour {
+	
+	private TurnStage currentTurnStage;
+	public TurnStage CurrentTurnStage { get { return currentTurnStage; } }
 
-	private int[] turnTime;
+	private readonly int[] turnTimeArr = {
+		20,	// preparation
+		3,	// waiting
+		15,	// after_door
+		15,	// fight_player
+		15,	// fight_enemy
+		20,	// select_cards
+		10	// completion
+	};
+	private int TurnTime { get { return turnTimeArr[(int)currentTurnStage]; } }
+
 	private int turnNumber;
-	public TurnStage currentTurnStage;
+	public int CurPlayerTurnNum { get { return turnNumber % 2; } }
 
 	// for debug
 	public TextMeshProUGUI timeText;
 	public TextMeshProUGUI stageText;
 	public TextMeshProUGUI playerText;
-	
-	public int CurPlayerTurnNum { get { return turnNumber % 2; } }
 
 	public void TryChangeTurn(int pNum) {
 		bool isPlayerTurn = GameManager.Instance.turnController.CurPlayerTurnNum == GameManager.Instance.GetPlayerAt(pNum).info.number;
@@ -32,11 +44,10 @@ public class TurnController : MonoBehaviour {
 			ChangeTurn();
 	}
 	public void StatFirstTurn() {
-		turnTime = new int[] { 20, 2, 15, 15, 15, 10 };
 		currentTurnStage = TurnStage.preparation;
 		turnNumber = 0;
 
-		Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum);
+		SendChangeTurn();
 
 		StartCoroutine(TurnFunc());
 	}
@@ -44,13 +55,13 @@ public class TurnController : MonoBehaviour {
 		StopAllCoroutines();
 
 		currentTurnStage = TurnStage.fight_player;
-		Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum);
+		SendChangeTurn();
 
 		StartCoroutine(TurnFunc());
 	}
 
 	private IEnumerator TurnFunc() {
-		int timeToEndTurn = turnTime[(int)currentTurnStage];
+		int timeToEndTurn = TurnTime;
 		stageText.text = currentTurnStage.ToString();
 		playerText.text = "pNum: " + CurPlayerTurnNum;
 
@@ -78,8 +89,7 @@ public class TurnController : MonoBehaviour {
 			case TurnStage.after_door:
 				currentTurnStage = TurnStage.preparation;
 				turnNumber++;
-				//currentTurnStage = TurnStage.completion;
-				Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum);
+				SendChangeTurn();
 				break;
 
 			case TurnStage.fight_player:
@@ -90,10 +100,15 @@ public class TurnController : MonoBehaviour {
 				CheckWinAfterEnemyTurn();
 				break;
 
+			case TurnStage.select_cards:
+				currentTurnStage = TurnStage.completion;
+				SendChangeTurn();
+				break;
+
 			case TurnStage.completion:
 				currentTurnStage = TurnStage.preparation;
 				turnNumber++;
-				Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum);
+				SendChangeTurn();
 				break;
 		}
 
@@ -108,6 +123,8 @@ public class TurnController : MonoBehaviour {
 			currentTurnStage = TurnStage.fight_player;
 		else
 			currentTurnStage = TurnStage.waiting;
+
+		SendChangeTurn();
 	}
 	private void AfterWait() {
 		GameManager.Instance.warTable.UseCardInWT(CurPlayerTurnNum);
@@ -120,12 +137,19 @@ public class TurnController : MonoBehaviour {
 		}
 		else {
 			// lose
-			currentTurnStage = TurnStage.completion;
+			bool needSelection;
 
-			GameManager.Instance.warTable.ClearTable();
-			Server.Instance.Send_EndFight(playerWin: false);
+			GameManager.Instance.warTable.OnLose(out needSelection);
+
+			if (needSelection) {
+				currentTurnStage = TurnStage.select_cards;
+			}
+			else {
+				currentTurnStage = TurnStage.completion;
+				Server.Instance.Send_EndFight(playerWin: false);
+			}
 		}
-		Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum);
+		SendChangeTurn();
 	}
 	private void CheckWinAfterEnemyTurn() {
 		if (GameManager.Instance.warTable.PlayerCanWin) {
@@ -139,21 +163,10 @@ public class TurnController : MonoBehaviour {
 			currentTurnStage = TurnStage.fight_player;
 		}
 
-		Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum);
+		SendChangeTurn();
 	}
 
-	/*
-	public void MonsterPlayed() {
-		StopAllCoroutines();
-
-		currentTurnStage = TurnStage.fight_player;
-
-		StartCoroutine(TurnFunc());
+	public void SendChangeTurn() {
+		Server.Instance.Send_ChangeTurn(currentTurnStage, CurPlayerTurnNum, TurnTime);
 	}
-
-	void TakeDoor() {
-		ServerGM.Instance.GiveCardToHand(ServerGM.Instance.doorDeck, ServerGM.Instance.GetCurPlayer().munchkin.hand);
-		currentTurnStage = TurnStage.completion;
-	}
-	*/
 }

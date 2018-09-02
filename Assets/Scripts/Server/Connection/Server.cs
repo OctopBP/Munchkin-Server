@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -72,11 +73,15 @@ public class Server : MonoBehaviour {
 						break;
 
 					case SendNames.trydropcard:
-						TryDrop(int.Parse(splitData[1]), int.Parse(splitData[2]), splitData[3]);
+						TryDrop(int.Parse(splitData[1]), splitData[2], splitData[3]);
 						break;
 
 					case SendNames.endturn:
 						EndTurn(int.Parse(splitData[1]));
+						break;
+
+					case SendNames.cardtodrop:
+						DropSelectedCard(int.Parse(splitData[1]), splitData[2]);
 						break;
 
 					default:
@@ -124,11 +129,27 @@ public class Server : MonoBehaviour {
 		}
 	}
 
-	private void TryDrop(int pNum, int cardId, string targetSlot) {
-		GameManager.Instance.TryDropCard(pNum, cardId, targetSlot);
+	private void TryDrop(int pNum, string parentSlotId, string targetSlot) {
+		GameManager.Instance.TryDropCard(pNum, parentSlotId, targetSlot);
 	}
 	private void EndTurn(int pNum) {
 		GameManager.Instance.turnController.TryChangeTurn(pNum);
+	}
+
+	private void DropSelectedCard(int pNum, string data) {
+		GameManager.Instance.warTable.ClearTable();
+
+		string[] slotIdArr = data.Split('%');
+
+		foreach(string slotId in slotIdArr) {
+			if (slotId.StartsWith("HA", System.StringComparison.CurrentCulture))
+				GameManager.Instance.GetPlayerAt(pNum).munchkin.hand.RemoveCard(slotId);
+			else
+				GameManager.Instance.GetPlayerAt(pNum).munchkin.GetSlotById(slotId).RemoveCard();
+		}
+		//GameManager.Instance.GetPlayerAt(pNum).munchkin.hand.RemoveEmptySlots(); // TODO: Rework
+
+		EndTurn(pNum);
 	}
 
 	// Send
@@ -137,14 +158,14 @@ public class Server : MonoBehaviour {
 		Send(msg, reliableChannel, cnnId);
 	}
 
-	public void Send_TurnAllowed(int pNum, int cardId, int closeId, string targetSlot) {
-		string msg = SendNames.dropallowed + "|" + pNum + "|" + cardId + "|" + closeId + "|" + targetSlot;
+	public void Send_TurnAllowed(int pNum, string slotId, string targetSlot, int cardId) {
+		string msg = SendNames.dropallowed + "|" + pNum + "|" + slotId + "|" + targetSlot + "|" + cardId;
 		Send(msg, reliableChannel);
 
 		Send_NewValues();
 	}
-	public void Send_TurnDisllowed(int pNum, int cardId, string reason) {
-		string msg = SendNames.dropdisallowed + "|" + cardId + "|" + reason;
+	public void Send_TurnDisllowed(int pNum, string slotId, string reason) {
+		string msg = SendNames.dropdisallowed + "|" + slotId + "|" + reason;
 		Send(msg, reliableChannel, GameManager.Instance.GetPlayerAt(pNum).info.connectionId);
 	}
 
@@ -160,14 +181,14 @@ public class Server : MonoBehaviour {
 		Send(msg, reliableChannel, player.info.connectionId);
 	}
 
-	public void Send_ChangeTurn(TurnStage stage, int playerTurnNumber) {
-		string msg = SendNames.newstage + "|" + playerTurnNumber + "|" + stage;
+	public void Send_ChangeTurn(TurnStage stage, int playerTurnNumber, int time) {
+		string msg = SendNames.newstage + "|" + playerTurnNumber + "|" + stage + "|" + time;
 		Send(msg, reliableChannel);
 	}
 	public void Send_OpenDoor(int playerTurnNumber, int cardId, bool isMonster) {
 		string msg = SendNames.opendoor + "|" + playerTurnNumber + "|" + cardId + "|";
 		if (isMonster)
-			msg += 1 + "|" + GameManager.Instance.warTable.playerDmg + "|" + GameManager.Instance.warTable.monsterDmg;
+			msg += 1 + "|" + GameManager.Instance.warTable.PlayerDmg + "|" + GameManager.Instance.warTable.MonsterDmg;
 		else
 			msg += 0;
 
@@ -187,8 +208,20 @@ public class Server : MonoBehaviour {
 		Send(msg, reliableChannel);
 	}
 
-	public void Send_RemoveCard(int pNum, string cardSlot) {
-		string msg = SendNames.removecard + "|" + pNum + "|" + cardSlot;
+	public void Send_SelectionCard(List<string> cards, int numberOfCardsToDrop) {
+		string msg = SendNames.cardselectionstage + "|" + numberOfCardsToDrop + "|";
+		foreach (string slotId in cards) {
+			msg += slotId + "%";
+		}
+		msg = msg.Trim('%');
+		Send(msg, reliableChannel, GameManager.Instance.GetCurPlayer().info.connectionId);
+
+		string msg2 = SendNames.en_cardselectionstage + "|" + numberOfCardsToDrop;
+		Send(msg2, reliableChannel, GameManager.Instance.GetUncurPlayer().info.connectionId);
+	}
+
+	public void Send_RemoveCard(int pNum, string slotId) {
+		string msg = SendNames.removecard + "|" + pNum + "|" + slotId;
 		Send(msg, reliableChannel);
 
 		Send_NewValues();
@@ -208,8 +241,8 @@ public class Server : MonoBehaviour {
 		msg += "|" + GameManager.Instance.player1.munchkin.lvl;
 		msg += "|" + GameManager.Instance.player2.munchkin.Damage;
 		msg += "|" + GameManager.Instance.player2.munchkin.lvl;
-		msg += "|" + GameManager.Instance.warTable.monsterDmg;
-		msg += "|" + GameManager.Instance.warTable.playerDmg;
+		msg += "|" + GameManager.Instance.warTable.MonsterDmg;
+		msg += "|" + GameManager.Instance.warTable.PlayerDmg;
 
 		Send(msg, reliableChannel);
 	}
