@@ -43,7 +43,10 @@ public class CardAbilitys : MonoBehaviour {
 
 			string slotId = allThings[randomCard];
 
-			GameManager.Instance.GetCurPlayer().munchkin.GetSlotById(slotId).RemoveCard();
+			if (slotId.StartsWith("HA", System.StringComparison.CurrentCulture))
+				GameManager.Instance.GetCurPlayer().munchkin.hand.RemoveCard(slotId);
+			else
+				GameManager.Instance.GetCurPlayer().munchkin.GetSlotById(slotId).RemoveCard();
 
 			allThings.RemoveAt(randomCard);
 		}

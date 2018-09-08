@@ -227,6 +227,9 @@ public class Server : MonoBehaviour {
 
 		Send_NewValues();
 	}
+	public void Send_CleanTable() {
+		Send(SendNames.cleantable, reliableChannel);
+	}
 
 	public void Send_StartGameInfo() {
 		string msg = SendNames.startgame;
@@ -241,11 +244,13 @@ public class Server : MonoBehaviour {
 		msg += "|" + GameManager.Instance.player1.munchkin.Damage;
 		msg += "|" + GameManager.Instance.player1.munchkin.lvl;
 		msg += "|" + GameManager.Instance.player2.munchkin.Damage;
-		msg += "|" + GameManager.Instance.player2.munchkin.lvl;
+		msg += "|" + GameManager.Instance.player2.munchkin.lvl; 
 		msg += "|" + GameManager.Instance.warTable.MonsterDmg;
 
-		if (GameManager.Instance.turnController.CurrentTurnStage == TurnStage.fight_player
-		    || GameManager.Instance.turnController.CurrentTurnStage == TurnStage.fight_enemy)
+		bool needWTValues = GameManager.Instance.turnController.CurrentTurnStage == TurnStage.fight_player ||
+							GameManager.Instance.turnController.CurrentTurnStage == TurnStage.fight_enemy;
+
+		if (needWTValues)
 			msg += "|" + GameManager.Instance.warTable.PlayerDmg;
 		else
 			msg += "|" + 0;

@@ -155,10 +155,13 @@ public class GameManager: MonoBehaviour {
 				break;
 
 			case Card.CardType.CLASS:
-				if (targetSlotId == GetPlayerAt(pNum).munchkin.classSlot.GetSlotId()) {
-					GetPlayerAt(pNum).munchkin.classSlot.AddCard(card);
-					TurnAllowed(pNum, slotId, card.id, targetSlotId);
-					return;
+				if (new TurnStage[] { TurnStage.preparation, TurnStage.completion, TurnStage.after_door }.Contain(turnController.CurrentTurnStage)
+						&& turnController.CurPlayerTurnNum == pNum) {
+					if (targetSlotId == GetPlayerAt(pNum).munchkin.classSlot.GetSlotId()) {
+						GetPlayerAt(pNum).munchkin.classSlot.AddCard(card);
+						TurnAllowed(pNum, slotId, card.id, targetSlotId);
+						return;
+					}
 				}
 				break;
 
@@ -183,9 +186,7 @@ public class GameManager: MonoBehaviour {
 		Server.Instance.Send_TurnDisllowed(pNum, slotId, reason);
 	}
 
-	public void OpenDoor(out bool isMonster) {
-		isMonster = false;
-
+	public void OpenDoor() {
 		if (doorDeck.Count == 0)
 			return;
 
@@ -193,16 +194,20 @@ public class GameManager: MonoBehaviour {
 		doorDeck.RemoveAt(0);
 		doorDeckCountText.text = doorDeck.Count + " Doors";
 
-		isMonster = card.cardType == Card.CardType.MONSTER;
+		bool isMonster = card.cardType == Card.CardType.MONSTER;
 
 		if (isMonster)
 			warTable.StartFight(card);
 		else
 			warTable.OpenCard(card);
 
+		turnController.OpenDoor(isMonster);
 		Server.Instance.Send_OpenDoor(turnController.CurPlayerTurnNum, card.id, isMonster);
 	}
 
+	public void GiveOneDoor() {
+		GiveHandCards(1, GetCurPlayer(), doorDeck);
+	}
 	public void OnPlayerWinFight() {
 		GiveHandCards(warTable.GetNumberOfTreasure(), GetCurPlayer(), treasureDeck);
 

@@ -68,9 +68,10 @@ public class WarTable {
 
 			Server.Instance.Send_TakeCardFromWT();
 		}
-		else {
+		else if (playerCards[0].cardType == Card.CardType.TRAP) {
 			CardAbilitys.Instance.Invoke((playerCards[0] as TrapCard).ability, 0);
 			Server.Instance.Send_NewValues();
+			Server.Instance.Send_CleanTable();
 
 			ClearTable();
 		}

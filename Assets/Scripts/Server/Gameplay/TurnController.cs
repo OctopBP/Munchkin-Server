@@ -79,7 +79,7 @@ public class TurnController : MonoBehaviour {
 
 		switch (currentTurnStage) {
 			case TurnStage.preparation:
-				OpenDoor();
+				GameManager.Instance.OpenDoor();
 				break;
 
 			case TurnStage.waiting:
@@ -87,6 +87,7 @@ public class TurnController : MonoBehaviour {
 				break;
 
 			case TurnStage.after_door:
+				GameManager.Instance.GiveOneDoor();
 				currentTurnStage = TurnStage.preparation;
 				turnNumber++;
 				SendChangeTurn();
@@ -115,10 +116,7 @@ public class TurnController : MonoBehaviour {
 		StartCoroutine(TurnFunc());
 	}
 
-	private void OpenDoor() {
-		bool isMonster;
-		GameManager.Instance.OpenDoor(out isMonster);
-
+	public void OpenDoor(bool isMonster) {
 		if (isMonster)
 			currentTurnStage = TurnStage.fight_player;
 		else

@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 
 public class Hand {
+	// TODO: HandCardSlot унаследовать от SingleSlot
+	// переработать Ремувы
+
 	public List<HandCardSlot> cardsSlots = new List<HandCardSlot>();
 
 	public void Add(Card card) {

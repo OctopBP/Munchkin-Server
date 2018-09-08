@@ -32,6 +32,8 @@
 
 	public const string removecard = "REMOVECARD";
 
+	public const string cleantable = "CLEANTABLE";
+
 	public const string values = "VALUES";
 
 	public const string cardselectionstage = "CARDSELSTAGE";

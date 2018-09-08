@@ -44,6 +44,8 @@ public class LoseEvents : MonoBehaviour {
 
 		if (newCardsToSelect.Count > 0)
 			Server.Instance.Send_SelectionCard(newCardsToSelect, numberOfCardToDrop);
+		else
+			GameManager.Instance.turnController.ChangeTurn();
 	}
 
 	// id: 40, 56
