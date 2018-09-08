@@ -130,6 +130,7 @@ public class TurnController : MonoBehaviour {
 		GameManager.Instance.warTable.UseCardInWT(CurPlayerTurnNum);
 
 		currentTurnStage = TurnStage.after_door;
+		SendChangeTurn();
 	}
 	private void CheckWinAfterPlayerTurn() {
 		if (GameManager.Instance.warTable.PlayerCanWin) {

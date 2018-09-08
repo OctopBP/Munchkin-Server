@@ -1,7 +1,7 @@
 ﻿{
   "cards": [
     {
-      "id": 170,
+      "id": 171,
       "cardType": 3,
       "deckType": 1,
       "name": "10-mm Pistol",
@@ -13,13 +13,54 @@
       "id": 172,
       "cardType": 3,
       "deckType": 1,
-      "name": "Gauss Rifle",
-      "texName": "Things/GaussRifle",
-      "bonus": 4,
+      "name": "AlienBlaster",
+      "texName": "Things/AlienBlaster",
+      "bonus": 5,
       "thingType": 0
     },
     {
-      "id": 179,
+      "id": 173,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Gauss Rifle",
+      "texName": "Things/GaussRifle",
+      "bonus": 4,
+      "thingType": 0,
+      "twoHandWeapon": true
+    },
+    {
+      "id": 174,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Lincoln's Repeater",
+      "texName": "Things/LincolnsRepeater",
+      "restriction": [ 0, 1, 3, 4 ],
+      "bonus": 3,
+      "thingType": 0,
+      "twoHandWeapon": true
+    },
+    {
+      "id": 175,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Gatling Lase",
+      "texName": "Things/GatlingLaser",
+      "restriction": [ 1 ],
+      "bonus": 4,
+      "thingType": 0,
+      "twoHandWeapon": true
+    },
+    {
+      "id": 176,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Mesmetron",
+      "texName": "Things/Mesmetron",
+      "bonus": 2,
+      "thingType": 0
+    },
+    {
+      "id": 180,
       "cardType": 3,
       "deckType": 1,
       "name": "Slasher Knife",
@@ -29,13 +70,23 @@
       "thingType": 0
     },
     {
-      "id": 181,
+      "id": 182,
       "cardType": 3,
       "deckType": 1,
       "name": "Plasma Pistol",
       "texName": "Things/PlasmaPistol",
       "bonus": 3,
       "thingType": 0
+    },
+    {
+      "id": 198,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Tesla Armor",
+      "texName": "Things/TeslaArmor",
+      "restriction": [ 3 ],
+      "bonus": 3,
+      "thingType": 2
     },
     {
       "id": 201,
@@ -47,12 +98,32 @@
       "thingType": 3
     },
     {
+      "id": 204,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Brotherhood Elder's Robe",
+      "texName": "Things/BrotherhoodEldersRobe",
+      "restriction": [ 1 ],
+      "bonus": 2,
+      "thingType": 2
+    },
+    {
       "id": 206,
       "cardType": 3,
       "deckType": 1,
       "name": "T-51b Power Armor",
       "texName": "Things/T51bPowerArmor",
       "bonus": 5,
+      "thingType": 2
+    },
+    {
+      "id": 207,
+      "cardType": 3,
+      "deckType": 1,
+      "name": "Outcast Power Armor",
+      "texName": "Things/OutcastPowerArmor",
+      "restriction": [ 0, 2, 3, 4 ],
+      "bonus": 4,
       "thingType": 2
     },
     {

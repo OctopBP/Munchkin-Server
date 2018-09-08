@@ -67,12 +67,10 @@ public class WarTable {
 			PlaseCardToHand(CurPlayerTurnNum);
 
 			Server.Instance.Send_TakeCardFromWT();
-			GameManager.Instance.turnController.SendChangeTurn();
 		}
 		else {
 			CardAbilitys.Instance.Invoke((playerCards[0] as TrapCard).ability, 0);
 			Server.Instance.Send_NewValues();
-			GameManager.Instance.turnController.SendChangeTurn();
 
 			ClearTable();
 		}
@@ -91,9 +89,7 @@ public class WarTable {
 		}
 	}
 	public void PlaseCardToHand(int pNum) {
-		Munchkin munchkin = GameManager.Instance.GetPlayerAt(pNum).munchkin;
-		munchkin.hand.Add(playerCards[0]);
-
+		GameManager.Instance.GetPlayerAt(pNum).munchkin.hand.Add(playerCards[0]);
 		playerCards.RemoveAt(0);
 	}
 	public void ClearTable() {

@@ -40,4 +40,8 @@
 
 	public const string cardtodrop = "CARDTODROP";
 
+	public const string hideweapon = "HIDEWEAPON";
+
+	public const string showweapon = "SHOWWEAPON";
+
 }

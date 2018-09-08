@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerInfo {
 	public string name;
@@ -49,6 +48,11 @@ public class Munchkin {
 			case "SH": return shoesSlot;
 			case "CL": return classSlot;
 		}
+		return null;
+	}
+	public ThingCardSlot GetThingLostById(string slotId) {
+		if (slotId != "CL")
+			return GetSlotById(slotId) as ThingCardSlot;
 		return null;
 	}
 

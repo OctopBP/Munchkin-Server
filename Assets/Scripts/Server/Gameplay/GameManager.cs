@@ -48,7 +48,7 @@ public class GameManager: MonoBehaviour {
 		doorPile = new List<Card>();
 		treasurePile = new List<Card>();
 
-		//doorDeck.Shaffle();
+		doorDeck.Shaffle();
 		treasureDeck.Shaffle();
 	}
 
@@ -118,6 +118,34 @@ public class GameManager: MonoBehaviour {
 
 						int classNameIndex = GetPlayerAt(pNum).munchkin.classSlot.GetClassNumber();
 						if ((card as ThingCard).restriction.Contain(classNameIndex)) {
+
+							// Если игрок кладёт одноручное оружие вместо двуручного возврафаям слот для второго оружия
+							if (targetSlotId == "W1") {
+								if (!GetPlayerAt(pNum).munchkin.weapon1Slot.IsEmpty()) {
+									if (GetPlayerAt(pNum).munchkin.weapon1Slot.GetCard().twoHandWeapon) {
+										if (!(card as ThingCard).twoHandWeapon)
+											Server.Instance.Send_ShowWeapon(pNum);
+									}
+								}
+							}
+
+							// Если игрок кладёт в слот двуручное оружие - убираем оружие из другого слота
+							if ((card as ThingCard).twoHandWeapon) {
+								if (targetSlotId == "W1") {
+									if (!GetPlayerAt(pNum).munchkin.weapon2Slot.IsEmpty()) {
+										GetPlayerAt(pNum).munchkin.weapon2Slot.RemoveCard();
+									}
+									Server.Instance.Send_HidwWeapon(pNum);
+								}
+								else if (targetSlotId == "W2") {
+									targetSlotId = "W1";
+									if (!GetPlayerAt(pNum).munchkin.weapon1Slot.IsEmpty()) {
+										GetPlayerAt(pNum).munchkin.weapon1Slot.RemoveCard();
+									}
+									Server.Instance.Send_HidwWeapon(pNum);
+								}
+							}
+
 							GetPlayerAt(pNum).munchkin.GetSlotById(targetSlotId).AddCard(card as ThingCard);
 							TurnAllowed(pNum, slotId, card.id, targetSlotId);
 							return;

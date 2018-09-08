@@ -18,6 +18,11 @@ public class CardAbilitys : MonoBehaviour {
 	public void _TrapTornBackpack() {
 		List<string> allThings = new List<string>();
 
+		foreach (HandCardSlot slot in GameManager.Instance.GetCurPlayer().munchkin.hand.cardsSlots) {
+			if (slot.GetCard().cardType == Card.CardType.THING)
+				allThings.Add(slot.GetSlotId());
+		}
+
 		if (!GameManager.Instance.GetCurPlayer().munchkin.weapon1Slot.IsEmpty())
 			allThings.Add(GameManager.Instance.GetCurPlayer().munchkin.weapon1Slot.GetSlotId());
 		

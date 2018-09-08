@@ -49,14 +49,12 @@ using UnityEngine;
 		PALADIN,	// 1
 		RAIDER,		// 2
 		SCIENTIST	// 3
+		//NOCLASS		// 4
 	}
 }
 [Serializable] public class LvlupCard: Card {
 }
 [Serializable] public class ThingCard: Card {
-	public int[] restriction = { 0, 1, 2, 3, 4 }; // 4 - нет класса
-	public int bonus;
-
 	public ThingType thingType;
 	public enum ThingType {
 		WEAPON,
@@ -64,6 +62,17 @@ using UnityEngine;
 		ARMOR,
 		SHOES
 	}
+	public bool twoHandWeapon = false;
+
+	public int[] restriction = { 0, 1, 2, 3, 4 }; // 4 - нет класса
+	//public ClassCard.ClassName[] restriction = {
+	//	ClassCard.ClassName.WANDERER,
+	//	ClassCard.ClassName.PALADIN,
+	//	ClassCard.ClassName.RAIDER,
+	//	ClassCard.ClassName.SCIENTIST,
+	//	ClassCard.ClassName.NOCLASS
+	//};
+	public int bonus;
 }
 [Serializable] public class ExplosiveCard: Card {
 	public int dmg;
@@ -95,7 +104,7 @@ public class CardManager : MonoBehaviour {
 			CardManagerData.allTreasureCards.AddRange(JsonReader.ReadJson<ThingCard>("ThingCards"));
 			CardManagerData.allTreasureCards.AddRange(JsonReader.ReadJson<ExplosiveCard>("ExplosiveCards"));
 
-			MakeDoorDeck();
+			//MakeDoorDeck();
 			//MakeTreasureDeck();
 		}
 		catch(Exception e) {
@@ -119,22 +128,26 @@ public class CardManager : MonoBehaviour {
 	public void MakeTreasureDeck() {
 		List<Card> newTreasureDeck = new List<Card>();
 
-		AddCardAtId(newTreasureDeck, 170); // Thing
-		AddCardAtId(newTreasureDeck, 172); // Thing
-		AddCardAtId(newTreasureDeck, 181); // Thing
-		AddCardAtId(newTreasureDeck, 179); // Thing
-		AddCardAtId(newTreasureDeck, 201); // Thing
-		AddCardAtId(newTreasureDeck, 206); // Thing
-		AddCardAtId(newTreasureDeck, 208); // Thing
-		AddCardAtId(newTreasureDeck, 212); // Thing
-		AddCardAtId(newTreasureDeck, 150); // LvlUp
-		AddCardAtId(newTreasureDeck, 153); // LvlUp
-		AddCardAtId(newTreasureDeck, 159); // LvlUp
-		AddCardAtId(newTreasureDeck, 165); // Expl
-		AddCardAtId(newTreasureDeck, 163); // Expl
-		AddCardAtId(newTreasureDeck, 152); // LvlUp
-		AddCardAtId(newTreasureDeck, 164); // Expl
-		AddCardAtId(newTreasureDeck, 166); // Expl
+		AddCardAtId(newTreasureDeck, 174); // Gatling Laser
+		AddCardAtId(newTreasureDeck, 198); // Tesla Armor
+		newTreasureDeck.AddRange(CardManagerData.allTreasureCards);
+
+		//AddCardAtId(newTreasureDeck, 170); // Thing
+		//AddCardAtId(newTreasureDeck, 172); // Thing
+		//AddCardAtId(newTreasureDeck, 181); // Thing
+		//AddCardAtId(newTreasureDeck, 179); // Thing
+		//AddCardAtId(newTreasureDeck, 201); // Thing
+		//AddCardAtId(newTreasureDeck, 206); // Thing
+		//AddCardAtId(newTreasureDeck, 208); // Thing
+		//AddCardAtId(newTreasureDeck, 212); // Thing
+		//AddCardAtId(newTreasureDeck, 150); // LvlUp
+		//AddCardAtId(newTreasureDeck, 153); // LvlUp
+		//AddCardAtId(newTreasureDeck, 159); // LvlUp
+		//AddCardAtId(newTreasureDeck, 165); // Expl
+		//AddCardAtId(newTreasureDeck, 163); // Expl
+		//AddCardAtId(newTreasureDeck, 152); // LvlUp
+		//AddCardAtId(newTreasureDeck, 164); // Expl
+		//AddCardAtId(newTreasureDeck, 166); // Expl
 
 		CardManagerData.allTreasureCards = newTreasureDeck;
 	}

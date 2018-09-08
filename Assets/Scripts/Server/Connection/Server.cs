@@ -194,7 +194,8 @@ public class Server : MonoBehaviour {
 
 		Send(msg, reliableChannel);
 
-		Send_NewValues();
+		if (isMonster)
+			Send_NewValues();
 	}
 
 	public void Send_EndFight(bool playerWin) {
@@ -242,8 +243,25 @@ public class Server : MonoBehaviour {
 		msg += "|" + GameManager.Instance.player2.munchkin.Damage;
 		msg += "|" + GameManager.Instance.player2.munchkin.lvl;
 		msg += "|" + GameManager.Instance.warTable.MonsterDmg;
-		msg += "|" + GameManager.Instance.warTable.PlayerDmg;
 
+		if (GameManager.Instance.turnController.CurrentTurnStage == TurnStage.fight_player
+		    || GameManager.Instance.turnController.CurrentTurnStage == TurnStage.fight_enemy)
+			msg += "|" + GameManager.Instance.warTable.PlayerDmg;
+		else
+			msg += "|" + 0;
+
+		msg += "|" + GameManager.Instance.turnController.CurrentTurnStage;
+			
+
+		Send(msg, reliableChannel);
+	}
+
+	public void Send_HidwWeapon(int pNum) {
+		string msg = SendNames.hideweapon + "|" + pNum;
+		Send(msg, reliableChannel);
+	}
+	public void Send_ShowWeapon(int pNum) {
+		string msg = SendNames.showweapon + "|" + pNum;
 		Send(msg, reliableChannel);
 	}
 
